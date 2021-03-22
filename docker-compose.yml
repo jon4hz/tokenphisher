@@ -1,0 +1,15 @@
+---
+version: '3'
+services:
+    tokenphisher:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        volumes:
+            - "./data:/usr/src/app/data"
+        environment:
+          TELEGRAM_API_ID: api_id_1234
+          TELEGRAM_API_HASH: api_hash_5678
+          TELEGRAM_PHONE: phonenumber
+        
