@@ -66,40 +66,40 @@ async def handler(event) -> None:
         token = False
     if token:
         print(f'{datetime.datetime.utcnow()} - Info: Found Token {token} from user {event.sender_id}')
-    # store token in file
-    try:
-        with open(DATAFILE, 'r') as f:
+        # store token in file
+        try:
+            with open(DATAFILE, 'r') as f:
+                try:
+                    data = json.load(f)
+                except json.JSONDecodeError as e:
+                    print(f'{datetime.datetime.utcnow()} - Error: Could not read file. - {e}')
+                    print(f'{datetime.datetime.utcnow()} - Warning: Overwriting old file.')
+                    data = {}
+                except Exception as e:
+                    print(f'{datetime.datetime.utcnow()} - Error: Could not read file. - {e}')
+            with open(DATAFILE, 'w') as f:
+                try:
+                    data[token] = {
+                            'time': str(datetime.datetime.utcnow()),
+                            'user_id': str(event.sender_id)
+                        }
+                    json.dump(data, f)
+                except Exception as e:
+                    print(f'{datetime.datetime.utcnow()} - Error: Could not write file. - {e}')
+        # create file for the first time
+        except FileNotFoundError:
             try:
-                data = json.load(f)
-            except json.JSONDecodeError as e:
-                print(f'{datetime.datetime.utcnow()} - Error: Could not read file. - {e}')
-                print(f'{datetime.datetime.utcnow()} - Warning: Overwriting old file.')
-                data = {}
-            except Exception as e:
-                print(f'{datetime.datetime.utcnow()} - Error: Could not read file. - {e}')
-        with open(DATAFILE, 'w') as f:
-            try:
-                data[token] = {
-                        'time': str(datetime.datetime.utcnow()),
-                        'user_id': str(event.sender_id)
-                    }
-                json.dump(data, f)
+                with open(DATAFILE, 'w') as f:
+                    json.dump({
+                        str(token): {
+                            'time': str(datetime.datetime.utcnow()),
+                            'user_id': str(event.sender_id)
+                        }
+                    }, f)
             except Exception as e:
                 print(f'{datetime.datetime.utcnow()} - Error: Could not write file. - {e}')
-    # create file for the first time
-    except FileNotFoundError:
-        try:
-            with open(DATAFILE, 'w') as f:
-                json.dump({
-                    str(token): {
-                        'time': str(datetime.datetime.utcnow()),
-                        'user_id': str(event.sender_id)
-                    }
-                }, f)
         except Exception as e:
             print(f'{datetime.datetime.utcnow()} - Error: Could not write file. - {e}')
-    except Exception as e:
-        print(f'{datetime.datetime.utcnow()} - Error: Could not write file. - {e}')
 
 
 if __name__ == "__main__":
