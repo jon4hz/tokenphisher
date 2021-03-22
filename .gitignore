@@ -6,3 +6,9 @@ venv
 
 # vscode 
 .vscode
+
+# docker development
+docker-compose-dev.yml
+
+# data
+data/tokens.json
